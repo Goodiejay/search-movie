@@ -22,7 +22,25 @@ def get_genres(ids: list, genres = genre_main )-> list:
         # print(index[id])
     # for ids in id:
     #     if 
-    
+
+
+def get_genre_id(names: list | str ) -> int | list:
+    ids = []
+    with open("genres.json", "r") as f:
+        genres=json.load(f)
+    for name in  names:
+        for genre_id in genres:
+            if genres[genre_id] == name:
+                ids.append(genre_id)
+            else:
+                pass
+    return ids
+        
+
+
+                
+
+
 
     # for genre in 
 

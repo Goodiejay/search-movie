@@ -69,7 +69,7 @@ def create_genre_dict():
         json.dump(genre1, f, indent=4 )
 
 def main():
-    id=[35,80,14]
+    id=[]
     genry=get_genres(id,genre_main)
     print(genry)
 

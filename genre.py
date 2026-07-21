@@ -7,7 +7,7 @@ genre_main={
 
 def get_genres(ids: list, genres = genre_main )-> list:
     name=[]
-    if not os.path.exists("genres.py"):
+    if not os.path.exists("genres.json"):
         create_genre_dict()
     with open("genres.json", "r") as f:
         genres=json.load(f)
@@ -34,6 +34,8 @@ def get_genre_id(names: list | str ) -> int | list:
                 ids.append(genre_id)
             else:
                 pass
+        if not ids:
+            return None
     return ids
         
 
@@ -69,7 +71,7 @@ def create_genre_dict():
         json.dump(genre1, f, indent=4 )
 
 def main():
-    id=[35,80,14]
+    id=[]
     genry=get_genres(id,genre_main)
     print(genry)
 

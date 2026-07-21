@@ -3,7 +3,12 @@ import requests
 import json
 from genre import get_genres
 from genre import get_genre_id
-apikey="45c9d50a02e5926e64e182ca5dedd828"
+from dotenv import load_dotenv 
+import os
+# from .env import apikey
+load_dotenv()
+apikey = os.getenv("apikey")
+
 
 
 movie_details = {}
@@ -11,13 +16,12 @@ movie_details = {}
 
 def search_movie(  params: dict, url : str, ) -> None:
     try:
-        print(params)
         response=requests.get(url, params=params )
         if response.status_code != 200:
-            print(f"Error: {response.status_code}: {response.reason}: {response.text}")
+            print(f"Error: {response.status_code}: {response.text}")
             return
         movies=response.json()
-        for index, movie in enumerate(movies["results"][:10], start= 1): # filter the search so it returnes only 10 movies
+        for index, movie in enumerate(movies["results"][:9], start= 1): # filter the search so it returnes only 10 movies
             movie_details[index] = movie
         if movie_details == { }:
             print("No movie found")
@@ -35,6 +39,7 @@ def search_movie(  params: dict, url : str, ) -> None:
 
 
 def display_movie()-> None:
+    
     print("="*40)
     print("Movie Viewer".center(40))
     print("="*40)
@@ -79,7 +84,9 @@ def main():
             "api_key": apikey,
             "query": "",
             "include_video": True,
+            "primary_release_date.gte": "2000-01-01",
             "language": "en-US",
+            "sort_by": "primary_release_date.desc",
             "sort_by": "vote_average.desc",
             "vote_count.gte": 1000,
             "vote_average.gte": 7.5
@@ -99,7 +106,9 @@ def main():
             "api_key": apikey,
             "with_genres": "",
             "include_video": True,
+             "primary_release_date.gte": "2000-01-01",
             "language": "en-US",
+            "sort_by": "primary_release_date.desc",
             "sort_by": "vote_average.desc",
             "vote_count.gte": 1000,
             "vote_average.gte": 7.5
@@ -109,6 +118,9 @@ def main():
             search=input("Enter genre: ").lower().strip().title()
             search=search.split(" ")
             genre_id = get_genre_id(search)
+            if genre_id is None:
+                print("Genre not found")
+                continue
             genre_id = ",".join(genre_id)
             params["with_genres"] = genre_id
             discover_movies(params, urll)
@@ -151,7 +163,7 @@ def discover_movies(params: dict, url: str):
         genre_names=get_genres(ids=movie["genre_ids"])
         print("-"*40)
         print(f"#{index+1}. {movie["title"]}     {movie["release_date"]}")
-        print(f"Genre:  {",".join(genre_names)}Language:  {movie["original_language"]}")
+        print(f"Genre:  {",".join(genre_names)}    Language:  {movie["original_language"]}")
         print(f"Rating:  {round(movie.get("vote_average", 0.0),1)}/10")
         print(f"Plot:  {movie["overview"]}")
         
